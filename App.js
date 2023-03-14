@@ -1,20 +1,26 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import {RecoilRoot} from 'recoil';
+import RecoilNexus from 'recoil-nexus';
+import {extendTheme, NativeBaseProvider} from 'native-base';
+import {NavigationContainer} from '@react-navigation/native';
+import RootNavigator from './src/navigation/RootNavigator';
+import {colorTheme} from './src/theme/colors';
+
+const Apptheme = extendTheme({colors: colorTheme});
+const config = {
+  dependencies: {
+    'linear-gradient': require('expo-linear-gradient').LinearGradient,
+  },
+};
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <RecoilRoot>
+      <RecoilNexus />
+      <NativeBaseProvider theme={Apptheme} config={config}>
+        <NavigationContainer>
+          <RootNavigator />
+        </NavigationContainer>
+      </NativeBaseProvider>
+    </RecoilRoot>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
