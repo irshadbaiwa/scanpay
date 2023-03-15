@@ -9,5 +9,7 @@ export const Assets = {
   },
   branding: {
     appIcon: require('../../assets/icon-transparent.png'),
+    appIconOpaque: require('../../assets/app-icon.png'),
+    fullIcon: require('../../assets/scanpay.png'),
   },
 };

@@ -2,6 +2,7 @@
   "expo": {
     "name": "scanpay",
     "slug": "scanpay",
+    "scheme": "scanpay",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/app-icon.png",
@@ -23,6 +24,14 @@
     },
     "web": {
       "favicon": "./assets/app-icon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-barcode-scanner",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access camera."
+        }
+      ]
+    ]
   }
 }

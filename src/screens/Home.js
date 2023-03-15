@@ -1,3 +1,4 @@
+import * as Linking from 'expo-linking';
 import {Alert} from 'react-native';
 import {Box, Heading, Column, Link} from 'native-base';
 import Layout from '../components/Layout';
@@ -5,8 +6,20 @@ import TransactionHistory from '../components/TransactionHistory';
 import HomeHeader from '../components/HomeHeader';
 import BalanceCard from '../components/BalanceCard';
 import ScanOrGenerateCodeCard from '../components/ScanOrGenerateCodeCard';
+import {NavRoutes} from '../navigation/NavRoutes';
 
 const HomeScreen = ({navigation}) => {
+  // Handle deep linking
+  const url = Linking.useURL();
+
+  if (url) {
+    const {hostname, path, queryParams} = Linking.parse(url);
+
+    if (Object.values(NavRoutes).includes(path)) {
+      navigation.navigate(path, {...queryParams});
+    }
+  }
+
   return (
     <Layout>
       {/* Header */}
