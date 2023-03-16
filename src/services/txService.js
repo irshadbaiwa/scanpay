@@ -61,7 +61,7 @@ export const recordTx = async (
 
   // ******...new
   if (senderAccount === user.walletId) {
-    const newBalance = parseFloat(user.walletId) - parseFloat(amount);
+    const newBalance = parseFloat(user.walletBalance) - parseFloat(amount);
     setRecoil(userDetails, {...user, walletBalance: newBalance});
 
     // persist to storage
