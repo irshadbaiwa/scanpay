@@ -13,7 +13,6 @@ import {
 } from 'native-base';
 import {useRecoilValue} from 'recoil';
 import Layout from '../components/Layout';
-import WalletInfoCard from '../components/WalletInfoCard';
 import ButtonPrimary from '../components/ButtonPrimary';
 import {Assets} from '../constants/assets';
 import {userDetails} from '../recoil/atoms';
@@ -35,6 +34,16 @@ const WitjdrawScreen = ({navigation}) => {
     if (!amount || parseFloat(amount) <= 0) {
       setExecuting(false);
       Alert.alert('Invalid amount', 'Amount should be greater than ₦0.00');
+      return;
+    }
+
+    // ensure funds are available
+    if (user.walletBalance < parseFloat(amount)) {
+      setExecuting(false);
+      Alert.alert(
+        'Insufficient Funds',
+        'Your wallet balance is not up to the amount inserted',
+      );
       return;
     }
 
