@@ -1,4 +1,5 @@
 import {useEffect, useCallback, useState} from 'react';
+import * as Linking from 'expo-linking';
 import {BackHandler, Alert} from 'react-native';
 import {Box, Text, Heading, HStack, Image, Icon, Spinner} from 'native-base';
 import {Ionicons} from '@expo/vector-icons';
@@ -13,7 +14,7 @@ import {recordTx} from '../services/txService';
 import {numberWithCommas} from '../utils/helpers';
 
 const CompletePaymentScreen = ({route, navigation}) => {
-  let {account, name, amount, narration} = route.params;
+  let {account, name, amount, narration = ''} = route.params;
   let placeHolderNarration = narration;
   if (!placeHolderNarration.trim()) {
     placeHolderNarration = `₦${numberWithCommas(amount)} payment to ${name}`;
@@ -35,7 +36,7 @@ const CompletePaymentScreen = ({route, navigation}) => {
           text: 'Top Up',
           style: 'default',
           onPress: () => {
-            navigation.navigate(NavRoutes.Wallet);
+            navigation.replace(NavRoutes.TopUp);
           },
         },
       ]);
@@ -63,11 +64,15 @@ const CompletePaymentScreen = ({route, navigation}) => {
         narration,
       );
       // show success screen
-      navigation.navigate(NavRoutes.PaymentSuccessful);
+      // navigation.navigate(NavRoutes.PaymentSuccessful);
+      const successUrl = Linking.createURL(NavRoutes.PaymentSuccessful);
+      await Linking.openURL(successUrl);
     } catch (e) {
       console.warn(e);
       // show error screen
-      navigation.navigate(NavRoutes.PaymentFailed);
+      // navigation.navigate(NavRoutes.PaymentFailed);
+      const errorUrl = Linking.createURL(NavRoutes.PaymentFailed);
+      await Linking.openURL(errorUrl);
     } finally {
       setExecuting(false);
     }
@@ -143,9 +148,7 @@ const CompletePaymentScreen = ({route, navigation}) => {
         </ButtonPrimary>
         {/* Cancel */}
         <ButtonOutline
-          onPress={() => {
-            navigation.popToTop();
-          }}
+          onPress={popToTop}
           disabled={executing}
           w="sm"
           maxWidth="full"

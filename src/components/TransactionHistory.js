@@ -11,7 +11,7 @@ const TransactionHistory = ({
   const onPress = () => {
     Alert.alert(
       `Transaction ID: ${transactionId}`,
-      `Amount: ₦${amount} Narration: ${narration}`,
+      `Type: ${type} Amount: ₦${amount} Narration: ${narration}`,
     );
   };
 

@@ -24,17 +24,6 @@ import {loadUserTxHx} from '../services/txService';
 import {numberWithCommas} from '../utils/helpers';
 
 const HomeScreen = ({navigation}) => {
-  // Handle deep linking
-  const url = Linking.useURL();
-
-  if (url) {
-    const {hostname, path, queryParams} = Linking.parse(url);
-
-    if (Object.values(NavRoutes).includes(path)) {
-      navigation.navigate(path, {...queryParams});
-    }
-  }
-
   // fetch tx hx
   const user = useRecoilValue(userDetails);
   const userTxs = useRecoilValue(userTxHx);
@@ -104,10 +93,10 @@ const HomeScreen = ({navigation}) => {
                 let narration = tx.narration;
                 if (!narration.trim()) {
                   narration = isDebit
-                    ? `₦${numberWithCommas(amount)} payment to ${
+                    ? `₦${numberWithCommas(tx.amount)} payment to ${
                         tx.receiverName
                       }`
-                    : `₦${numberWithCommas(amount)} payment from ${
+                    : `₦${numberWithCommas(tx.amount)} payment from ${
                         tx.senderName
                       }`;
                 }

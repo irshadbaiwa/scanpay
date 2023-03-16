@@ -35,15 +35,19 @@ const TransactionHistoryScreen = ({navigation}) => {
           </Row>
         </Column>
       ) : (
-        <Column space={3}>
+        <Column space={3} mb={6}>
           {userTxs.map(tx => {
             const isDebit = user.walletId === tx.senderAccount ? true : false;
             const type = isDebit ? 'debit' : 'credit';
             let narration = tx.narration;
             if (!narration.trim()) {
               narration = isDebit
-                ? `₦${numberWithCommas(amount)} payment to ${tx.receiverName}`
-                : `₦${numberWithCommas(amount)} payment from ${tx.senderName}`;
+                ? `₦${numberWithCommas(tx.amount)} payment to ${
+                    tx.receiverName
+                  }`
+                : `₦${numberWithCommas(tx.amount)} payment from ${
+                    tx.senderName
+                  }`;
             }
             const date = Moment(tx.timestamp).calendar();
 

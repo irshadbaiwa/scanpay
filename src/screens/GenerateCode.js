@@ -77,7 +77,11 @@ const GenerateCodeScreen = ({navigation}) => {
           {/* desc */}
           <VStack mt={4} alignSelf="center" alignItems="center" space={2}>
             <Icon as={Ionicons} name="scan" color="muted.400" size={7} />
-            <Text color="muted.400" fontSize="lg" fontWeight="bold">
+            <Text
+              color="muted.400"
+              fontSize="lg"
+              fontWeight="bold"
+              textAlign="center">
               {'Scan the qrcode to pay ' + user.fullName}
             </Text>
             <Text color="brand.900" fontSize="xl" fontWeight="bold">

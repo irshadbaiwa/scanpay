@@ -1,3 +1,4 @@
+import * as Linking from 'expo-linking';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavRoutes} from './NavRoutes';
 import AuthStack from './AuthStack';
@@ -12,11 +13,28 @@ import PaymentFailedScreen from '../screens/PaymentFailed';
 import TransactionHistoryScreen from '../screens/TransactionHistory';
 import TopUpScreen from '../screens/TopUp';
 import WithdrawScreen from '../screens/Withdraw';
+import {useNavigation} from '@react-navigation/native';
 
 const Stack = createNativeStackNavigator();
 
 const RootNavigator = () => {
   const isAuthenticated = useRecoilValue(userAuthState);
+
+  // Handle deep linking
+  const url = Linking.useURL();
+  const navigation = useNavigation();
+
+  if (url) {
+    const {hostname, path, queryParams} = Linking.parse(url);
+
+    if (Object.values(NavRoutes).includes(path)) {
+      try {
+        navigation.navigate(path, {...queryParams});
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+  }
 
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>

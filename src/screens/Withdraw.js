@@ -1,5 +1,6 @@
 import {useState} from 'react';
 import {Alert} from 'react-native';
+import * as Linking from 'expo-linking';
 import {
   HStack,
   VStack,
@@ -63,12 +64,16 @@ const WitjdrawScreen = ({navigation}) => {
       timestamp,
       'Funds Withdrawal',
     )
-      .then(() => {
-        navigation.navigate(NavRoutes.PaymentSuccessful);
+      .then(async () => {
+        // navigation.replace(NavRoutes.PaymentSuccessful);
+        const successUrl = Linking.createURL(NavRoutes.PaymentSuccessful);
+        await Linking.openURL(successUrl);
       })
-      .catch(e => {
+      .catch(async e => {
         console.warn(e);
-        navigation.navigate(NavRoutes.PaymentFailed);
+        // navigation.replace(NavRoutes.PaymentFailed);
+        const errorUrl = Linking.createURL(NavRoutes.PaymentFailed);
+        await Linking.openURL(errorUrl);
       })
       .finally(() => {
         setExecuting(false);

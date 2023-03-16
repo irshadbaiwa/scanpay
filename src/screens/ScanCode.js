@@ -9,6 +9,7 @@ import {Assets} from '../constants/assets';
 const ScanCodeScreen = ({navigation}) => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const getBarCodeScannerPermissions = async () => {
@@ -25,8 +26,10 @@ const ScanCodeScreen = ({navigation}) => {
       await Linking.openURL(data);
     } catch (error) {
       console.warn(error);
+      setError(true);
+    } finally {
+      setScanned(true);
     }
-    setScanned(true);
   };
 
   if (hasPermission === null) {
@@ -107,18 +110,25 @@ const ScanCodeScreen = ({navigation}) => {
       {/* Scanning Error */}
       {scanned && (
         <Box h={'full'} justifyContent="center" alignItems="center">
-          <HStack space={3} alignItems="center">
-            <Icon
-              as={Ionicons}
-              name="warning-outline"
-              color="error.400"
-              size={8}
-            />
-            <Text color="error.400" fontWeight="bold" fontSize={'xl'}>
-              Invalid QR Code
-            </Text>
-          </HStack>
-          <Pressable onPress={() => setScanned(false)} mt={6}>
+          {error && (
+            <HStack space={3} alignItems="center">
+              <Icon
+                as={Ionicons}
+                name="warning-outline"
+                color="error.400"
+                size={8}
+              />
+              <Text color="error.400" fontWeight="bold" fontSize={'xl'}>
+                Invalid QR Code
+              </Text>
+            </HStack>
+          )}
+          <Pressable
+            onPress={() => {
+              setScanned(false);
+              setError(false);
+            }}
+            mt={6}>
             <HStack space={2} alignItems="center">
               <Icon
                 as={Ionicons}
