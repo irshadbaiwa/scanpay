@@ -9,7 +9,7 @@
 
 This is a demo app that allows payment by scanning a pre-generated qrcode.
 
-<img alt="scanpay home screen" src="./screenshots/home.jpg" width="360px"/>
+<img alt="scanpay home screen" src="./screenshots/home.jpg" width="360px" style="text-align: center; box-shadow: 5px 10px; "/>
 
 ## 🚀 How to use
 
