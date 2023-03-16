@@ -1,12 +1,27 @@
 import * as Linking from 'expo-linking';
-import {Alert} from 'react-native';
-import {Box, Heading, Column, Link} from 'native-base';
+import {
+  Box,
+  Heading,
+  Column,
+  Link,
+  Skeleton,
+  Icon,
+  Text,
+  Row,
+} from 'native-base';
+import {Ionicons} from '@expo/vector-icons';
 import Layout from '../components/Layout';
 import TransactionHistory from '../components/TransactionHistory';
 import HomeHeader from '../components/HomeHeader';
 import BalanceCard from '../components/BalanceCard';
 import ScanOrGenerateCodeCard from '../components/ScanOrGenerateCodeCard';
 import {NavRoutes} from '../navigation/NavRoutes';
+import {useEffect, useState} from 'react';
+import {useRecoilValue} from 'recoil';
+import {userDetails, userTxHx} from '../recoil/atoms';
+import Moment from 'moment';
+import {loadUserTxHx} from '../services/txService';
+import {numberWithCommas} from '../utils/helpers';
 
 const HomeScreen = ({navigation}) => {
   // Handle deep linking
@@ -19,6 +34,23 @@ const HomeScreen = ({navigation}) => {
       navigation.navigate(path, {...queryParams});
     }
   }
+
+  // fetch tx hx
+  const user = useRecoilValue(userDetails);
+  const userTxs = useRecoilValue(userTxHx);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        await loadUserTxHx(user.walletId);
+      } catch (e) {
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetch();
+  }, []);
 
   return (
     <Layout>
@@ -37,50 +69,80 @@ const HomeScreen = ({navigation}) => {
           Recent Transactions
         </Heading>
         <Column space={2}>
-          {/* Debit */}
-          <TransactionHistory
-            transactionId={89129902}
-            type="debit"
-            narration="Shoes purchase"
-            timestamp="Today, 08:22am"
-            amount="54,750"
-          />
+          {loading ? (
+            <>
+              <Skeleton mx={1} maxW="full" />
+              <Skeleton mx={1} maxW="full" />
+              <Skeleton mx={1} maxW="full" />
+            </>
+          ) : userTxs.length === 0 ? (
+            <Column space={2} alignItems="center">
+              <Icon
+                as={Ionicons}
+                name="folder-open"
+                color="muted.200"
+                size={20}
+              />
+              <Row space={2} alignItems="center">
+                <Icon
+                  as={Ionicons}
+                  name="information-circle-outline"
+                  color="blue.400"
+                  size={6}
+                />
+                <Text color="blue.400" fontWeight="bold" fontSize={'md'}>
+                  Empty Transaction History
+                </Text>
+              </Row>
+            </Column>
+          ) : (
+            <>
+              {userTxs.slice(0, 3).map(tx => {
+                const isDebit =
+                  user.walletId === tx.senderAccount ? true : false;
+                const type = isDebit ? 'debit' : 'credit';
+                let narration = tx.narration;
+                if (!narration.trim()) {
+                  narration = isDebit
+                    ? `₦${numberWithCommas(amount)} payment to ${
+                        tx.receiverName
+                      }`
+                    : `₦${numberWithCommas(amount)} payment from ${
+                        tx.senderName
+                      }`;
+                }
+                const date = Moment(tx.timestamp).calendar();
 
-          {/* Credit */}
-          <TransactionHistory
-            transactionId={89523902}
-            type="credit"
-            narration="Phone purchase"
-            timestamp="Today, 12:05pm"
-            amount="30,000"
-          />
+                return (
+                  <TransactionHistory
+                    key={tx.timestamp}
+                    transactionId={tx.timestamp}
+                    type={type}
+                    narration={narration}
+                    timestamp={date}
+                    amount={numberWithCommas(tx.amount)}
+                  />
+                );
+              })}
 
-          {/* Debit */}
-          <TransactionHistory
-            transactionId={89123902}
-            type="debit"
-            narration="Grocery shopping"
-            timestamp="3rd March, 05:22pm"
-            amount="54,750"
-          />
-
-          {/* Tx end */}
+              {/* view all */}
+              <Link
+                onPress={() => {
+                  navigation.navigate(NavRoutes.TransactionHistory);
+                }}
+                px="2"
+                _text={{
+                  color: 'blue.400',
+                  fontWeight: 'bold',
+                }}
+                isUnderlined={false}
+                mt={4}
+                alignSelf="flex-end">
+                View all
+              </Link>
+            </>
+          )}
         </Column>
-        {/* view all */}
-        <Link
-          onPress={() => {
-            Alert.alert('Take me to Transaction History');
-          }}
-          px="2"
-          _text={{
-            color: 'blue.400',
-            fontWeight: 'bold',
-          }}
-          isUnderlined={false}
-          mt={4}
-          alignSelf="flex-end">
-          View all
-        </Link>
         {/* Tx Hx End */}
       </Box>
     </Layout>

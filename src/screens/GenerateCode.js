@@ -21,8 +21,14 @@ import WalletInfoCard from '../components/WalletInfoCard';
 import ButtonPrimary from '../components/ButtonPrimary';
 import {Assets} from '../constants/assets';
 import {NavRoutes} from '../navigation/NavRoutes';
+import {useRecoilValue} from 'recoil';
+import {userDetails} from '../recoil/atoms';
+import {numberWithCommas} from '../utils/helpers';
+import ButtonOutline from '../components/ButtonOutline';
 
 const GenerateCodeScreen = ({navigation}) => {
+  const user = useRecoilValue(userDetails);
+
   const [amount, setAmount] = useState('');
   const [narration, setNarration] = useState('');
   const [codeGenerated, setCodeGenerated] = useState(false);
@@ -30,14 +36,14 @@ const GenerateCodeScreen = ({navigation}) => {
 
   const generateCode = () => {
     if (!amount || parseFloat(amount) <= 0) {
-      Alert.alert('Insert valid amount');
+      Alert.alert('Insert valid amount', 'Amount should be greater than ₦0.00');
       return;
     }
 
     const path = NavRoutes.CompletePayment;
     const params = {
-      account: '9038078419',
-      name: 'Abubakar Ibrahim Baiwa',
+      account: user.walletId,
+      name: user.fullName,
       amount: parseFloat(amount.replace(',', '')),
       narration,
     };
@@ -69,12 +75,15 @@ const GenerateCodeScreen = ({navigation}) => {
       {codeGenerated ? (
         <>
           {/* desc */}
-          <HStack mt={4} alignSelf="center" alignItems="center" space={2}>
+          <VStack mt={4} alignSelf="center" alignItems="center" space={2}>
             <Icon as={Ionicons} name="scan" color="muted.400" size={7} />
             <Text color="muted.400" fontSize="lg" fontWeight="bold">
-              Scan qrcode to pay
+              {'Scan the qrcode to pay ' + user.fullName}
             </Text>
-          </HStack>
+            <Text color="brand.900" fontSize="xl" fontWeight="bold">
+              {'₦' + numberWithCommas(amount)}
+            </Text>
+          </VStack>
 
           {/* Qr-code */}
           <Box alignItems="center" mt={24}>
@@ -84,15 +93,26 @@ const GenerateCodeScreen = ({navigation}) => {
             />
           </Box>
 
-          {/* Regenrate code Btn */}
+          {/* Done Btn */}
           <ButtonPrimary
-            onPress={regenerateCode}
+            onPress={() => {
+              navigation.goBack();
+            }}
             w="sm"
             maxWidth="full"
             alignSelf="center"
             mt={24}>
-            Regenerate
+            Done
           </ButtonPrimary>
+          {/* Regenrate code Btn */}
+          <ButtonOutline
+            onPress={regenerateCode}
+            w="sm"
+            maxWidth="full"
+            alignSelf="center"
+            mt={2}>
+            Regenerate
+          </ButtonOutline>
         </>
       ) : (
         <>
@@ -119,13 +139,13 @@ const GenerateCodeScreen = ({navigation}) => {
                 <WalletInfoCard
                   iconName="person-circle-outline"
                   title="Wallet Holder"
-                  value="Abubakar Ibrahim Baiwa"
+                  value={user.fullName}
                 />
                 {/* Wallet ID */}
                 <WalletInfoCard
                   iconName="card-outline"
                   title="Wallet ID"
-                  value="9038078419"
+                  value={user.walletId}
                 />
               </VStack>
 

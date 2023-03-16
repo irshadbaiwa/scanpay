@@ -7,7 +7,6 @@ export const NavRoutes = {
   AppTabs: 'app-tabs',
   Home: 'home',
   Wallet: 'wallet',
-  Profile: 'profile',
 
   ScanCode: 'scan-payment-code',
   GenerateCode: 'generate-payment-code',
@@ -15,4 +14,6 @@ export const NavRoutes = {
   PaymentSuccessful: 'payment-successful',
   PaymentFailed: 'payment-failed',
   TransactionHistory: 'transaction-history',
+  TopUp: 'top-up-wallet',
+  Withdraw: 'withdraw',
 };

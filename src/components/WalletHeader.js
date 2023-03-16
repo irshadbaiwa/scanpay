@@ -1,10 +1,13 @@
 import {useState} from 'react';
 import {Box, Column, Image, Heading, Link} from 'native-base';
+import {useRecoilValue} from 'recoil';
+import {userDetails} from '../recoil/atoms';
+import {numberWithCommas} from '../utils/helpers';
 import {Assets} from '../constants/assets';
 
 const WalletHeader = props => {
   const [showBalance, setShowBalance] = useState(false);
-  const [userBalance, setUserBalance] = useState('₦992,498.00');
+  const {walletBalance} = useRecoilValue(userDetails);
 
   return (
     <Box {...props}>
@@ -21,7 +24,7 @@ const WalletHeader = props => {
       {/* Wallet Balance */}
       <Column mt={3} alignItems="center">
         <Heading color="brand.900" fontSize="4xl">
-          {showBalance ? userBalance : 'XXXX.XX'}
+          {showBalance ? `₦${numberWithCommas(walletBalance)}` : 'XXXX.XX'}
         </Heading>
         <Link
           onPress={() => setShowBalance(current => !current)}

@@ -9,7 +9,10 @@ const TransactionHistory = ({
   transactionId,
 }) => {
   const onPress = () => {
-    Alert.alert(JSON.stringify(transactionId));
+    Alert.alert(
+      `Transaction ID: ${transactionId}`,
+      `Amount: ₦${amount} Narration: ${narration}`,
+    );
   };
 
   return (

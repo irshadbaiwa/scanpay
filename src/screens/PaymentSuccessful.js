@@ -27,7 +27,7 @@ const PaymentSuccessfulScreen = ({navigation}) => {
             size={16}
           />
           <Text color="success.600" fontWeight="bold" fontSize={'lg'}>
-            Payment Successful!
+            Transaction Successful!
           </Text>
         </VStack>
         {/* Home */}

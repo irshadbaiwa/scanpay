@@ -1,12 +1,27 @@
 import {atom} from 'recoil';
-import {AtomKeys} from './atomkeys';
 
 export const userOnboardingState = atom({
-  key: AtomKeys.userOnboardingState,
-  default: true,
+  key: 'USER_ONBOARDING_STATE',
+  default: false,
 });
 
 export const userAuthState = atom({
-  key: AtomKeys.userAuthState,
-  default: true,
+  key: 'USER_AUTH_STATE',
+  default: false,
+});
+
+export const userDetails = atom({
+  key: 'USER_PROFILE_DETAILS',
+  default: {
+    fullName: '',
+    email: '',
+    phone: '',
+    walletId: '',
+    walletBalance: 0,
+  },
+});
+
+export const userTxHx = atom({
+  key: 'USER_TRANSACTION_HISTORY',
+  default: [],
 });

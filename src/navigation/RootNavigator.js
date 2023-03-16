@@ -9,7 +9,9 @@ import GenerateCodeScreen from '../screens/GenerateCode';
 import CompletePaymentScreen from '../screens/CompletePayment';
 import PaymentSuccessfulScreen from '../screens/PaymentSuccessful';
 import PaymentFailedScreen from '../screens/PaymentFailed';
-import TransactionHistory from '../components/TransactionHistory';
+import TransactionHistoryScreen from '../screens/TransactionHistory';
+import TopUpScreen from '../screens/TopUp';
+import WithdrawScreen from '../screens/Withdraw';
 
 const Stack = createNativeStackNavigator();
 
@@ -40,8 +42,10 @@ const RootNavigator = () => {
           />
           <Stack.Screen
             name={NavRoutes.TransactionHistory}
-            component={TransactionHistory}
+            component={TransactionHistoryScreen}
           />
+          <Stack.Screen name={NavRoutes.TopUp} component={TopUpScreen} />
+          <Stack.Screen name={NavRoutes.Withdraw} component={WithdrawScreen} />
         </Stack.Group>
       ) : (
         <Stack.Screen name={NavRoutes.AuthStack} component={AuthStack} />

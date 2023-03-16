@@ -27,7 +27,7 @@ const PaymentFailedScreen = ({navigation}) => {
             size={16}
           />
           <Text color="error.600" fontWeight="bold" fontSize={'lg'}>
-            Payment Failed!
+            Transaction Failed!
           </Text>
         </VStack>
         {/* Home */}

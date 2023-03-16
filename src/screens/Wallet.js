@@ -1,11 +1,15 @@
-import {Alert} from 'react-native';
 import {Box, Column, Row, Heading} from 'native-base';
 import Layout from '../components/Layout';
 import ActionnPill from '../components/ActionPill';
 import WalletInfoCard from '../components/WalletInfoCard';
 import WalletHeader from '../components/WalletHeader';
+import {useRecoilValue} from 'recoil';
+import {userDetails} from '../recoil/atoms';
+import {NavRoutes} from '../navigation/NavRoutes';
 
-const WalletScreen = () => {
+const WalletScreen = ({navigation}) => {
+  const user = useRecoilValue(userDetails);
+
   return (
     <Layout>
       {/* Header */}
@@ -24,13 +28,13 @@ const WalletScreen = () => {
         <WalletInfoCard
           iconName="person-circle-outline"
           title="Wallet Holder"
-          value="Abubakar Ibrahim Baiwa"
+          value={user.fullName}
         />
         {/* Wallet ID */}
         <WalletInfoCard
           iconName="card-outline"
           title="Wallet ID"
-          value="9038078419"
+          value={user.walletId}
         />
       </Column>
 
@@ -46,28 +50,28 @@ const WalletScreen = () => {
             action="Top Up"
             iconName="wallet-outline"
             onPress={() => {
-              Alert.alert('Top Up');
+              navigation.navigate(NavRoutes.TopUp);
             }}
           />
           <ActionnPill
             action="Withdraw"
             iconName="cash-outline"
             onPress={() => {
-              Alert.alert('Withdraw');
+              navigation.navigate(NavRoutes.Withdraw);
             }}
           />
           <ActionnPill
             action="Scan"
             iconName="scan-outline"
             onPress={() => {
-              Alert.alert('Scan code');
+              navigation.navigate(NavRoutes.ScanCode);
             }}
           />
           <ActionnPill
             action="Generate"
             iconName="qr-code-outline"
             onPress={() => {
-              Alert.alert('Generate payment code');
+              navigation.navigate(NavRoutes.GenerateCode);
             }}
           />
         </Row>

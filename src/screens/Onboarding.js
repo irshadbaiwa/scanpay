@@ -1,23 +1,20 @@
 import React from 'react';
-import {useSetRecoilState} from 'recoil';
 import {Text, Image, Heading, VStack} from 'native-base';
 import Onboarding from 'react-native-onboarding-swiper';
 import {Assets} from '../constants/assets';
 import ButtonPrimary from '../components/ButtonPrimary';
 import ButtonOutline from '../components/ButtonOutline';
 import {NavRoutes} from '../navigation/NavRoutes';
-import {userOnboardingState} from '../recoil/atoms';
+import {completeOnboarding} from '../services/authService';
 
 const OnboardingScreen = ({navigation}) => {
-  const setUserOnboarded = useSetRecoilState(userOnboardingState);
-
   const goToLogin = () => {
     navigation.navigate(NavRoutes.Login);
-    setUserOnboarded(true);
+    completeOnboarding();
   };
   const goToSignup = () => {
     navigation.navigate(NavRoutes.Signup);
-    setUserOnboarded(true);
+    completeOnboarding();
   };
 
   return (

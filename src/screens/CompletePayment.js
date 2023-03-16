@@ -1,22 +1,76 @@
-import {useEffect, useCallback} from 'react';
-import {BackHandler} from 'react-native';
-import {Box, Text, Heading, HStack, Image, Icon} from 'native-base';
+import {useEffect, useCallback, useState} from 'react';
+import {BackHandler, Alert} from 'react-native';
+import {Box, Text, Heading, HStack, Image, Icon, Spinner} from 'native-base';
 import {Ionicons} from '@expo/vector-icons';
 import Layout from '../components/Layout';
 import ButtonPrimary from '../components/ButtonPrimary';
+import ButtonOutline from '../components/ButtonOutline';
 import {Assets} from '../constants/assets';
 import {NavRoutes} from '../navigation/NavRoutes';
+import {useRecoilState} from 'recoil';
+import {userDetails} from '../recoil/atoms';
+import {recordTx} from '../services/txService';
+import {numberWithCommas} from '../utils/helpers';
 
 const CompletePaymentScreen = ({route, navigation}) => {
   let {account, name, amount, narration} = route.params;
-  if (!narration.trim()) {
-    narration = `₦${amount} to ${name}`;
+  let placeHolderNarration = narration;
+  if (!placeHolderNarration.trim()) {
+    placeHolderNarration = `₦${numberWithCommas(amount)} payment to ${name}`;
   }
 
-  const confirmPayment = useCallback(() => {
-    //... deduct amount
+  const [user, setUser] = useRecoilState(userDetails);
+  const [executing, setExecuting] = useState(false);
+
+  const confirmPayment = useCallback(async () => {
+    setExecuting(true);
+    let walletBalance = user.walletBalance;
+
+    // ensure funds are available
+    if (walletBalance < parseFloat(amount)) {
+      setExecuting(false);
+      Alert.alert('Insufficient Funds', 'Top up wallet?', [
+        {text: 'Cancel', style: 'cancel'},
+        {
+          text: 'Top Up',
+          style: 'default',
+          onPress: () => {
+            navigation.navigate(NavRoutes.Wallet);
+          },
+        },
+      ]);
+      return;
+    }
+
+    // ensure reciever is different from sender
+    if (user.walletId === account) {
+      setExecuting(false);
+      Alert.alert('Error', 'You can not transfer funds to the same account');
+      return;
+    }
+
     //... add to tx hx
-    navigation.navigate(NavRoutes.PaymentSuccessful);
+    try {
+      // ... reflect in storage
+      const timestamp = new Date().getTime();
+      await recordTx(
+        user.walletId,
+        user.fullName,
+        account,
+        name,
+        parseFloat(amount.replace(',', '')),
+        timestamp,
+        narration,
+      );
+      // show success screen
+      navigation.navigate(NavRoutes.PaymentSuccessful);
+    } catch (e) {
+      console.warn(e);
+      // show error screen
+      navigation.navigate(NavRoutes.PaymentFailed);
+    } finally {
+      setExecuting(false);
+    }
   }, []);
 
   const popToTop = useCallback(() => {
@@ -53,7 +107,7 @@ const CompletePaymentScreen = ({route, navigation}) => {
 
         {/* Payment details */}
         <Heading my={12} fontSize="4xl">
-          {'₦' + amount}
+          {'₦' + numberWithCommas(amount)}
         </Heading>
         <Box alignItems="center">
           <Text color="muted.400" fontSize="xl" fontWeight="bold">
@@ -66,26 +120,39 @@ const CompletePaymentScreen = ({route, navigation}) => {
             {account}
           </Text>
           <Text color="muted.400" fontSize="xl" fontWeight="bold" mt={4}>
-            Payment for:
+            Narration:
           </Text>
           <Text
             color="muted.500"
             fontSize="lg"
             fontWeight="bold"
             textAlign="center">
-            {narration}
+            {placeHolderNarration}
           </Text>
         </Box>
 
         {/* Confirm */}
         <ButtonPrimary
           onPress={confirmPayment}
+          disabled={executing}
           w="sm"
           maxWidth="full"
           alignSelf="center"
           mt={12}>
-          Pay
+          {executing ? <Spinner size="sm" color="text.100" /> : 'Pay'}
         </ButtonPrimary>
+        {/* Cancel */}
+        <ButtonOutline
+          onPress={() => {
+            navigation.popToTop();
+          }}
+          disabled={executing}
+          w="sm"
+          maxWidth="full"
+          alignSelf="center"
+          mt={2}>
+          Cancel
+        </ButtonOutline>
       </Box>
     </Layout>
   );
