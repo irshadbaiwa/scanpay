@@ -54,15 +54,19 @@ const TopUpScreen = ({navigation}) => {
       'Wallet top up',
     )
       .then(async () => {
-        // navigation.replace(NavRoutes.PaymentSuccessful);
-        const successUrl = Linking.createURL(NavRoutes.PaymentSuccessful);
-        await Linking.openURL(successUrl);
+        navigation.replace(NavRoutes.PaymentSuccessful);
+        // const successUrl = Linking.createURL(NavRoutes.PaymentSuccessful, {
+        // scheme: 'scanpay',
+        // });
+        // await Linking.openURL(successUrl);
       })
       .catch(async e => {
         console.warn(e);
-        // navigation.replace(NavRoutes.PaymentFailed);
-        const errorUrl = Linking.createURL(NavRoutes.PaymentFailed);
-        await Linking.openURL(errorUrl);
+        navigation.replace(NavRoutes.PaymentFailed);
+        // const errorUrl = Linking.createURL(NavRoutes.PaymentFailed, {
+        //   scheme: 'scanpay',
+        // });
+        // await Linking.openURL(errorUrl);
       })
       .finally(() => {
         setExecuting(false);

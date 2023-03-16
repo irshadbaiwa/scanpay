@@ -5,6 +5,7 @@ import {Box, Text, Heading, HStack, Image, Icon, Pressable} from 'native-base';
 import {Ionicons} from '@expo/vector-icons';
 import Layout from '../components/Layout';
 import {Assets} from '../constants/assets';
+import {NavRoutes} from '../navigation/NavRoutes';
 
 const ScanCodeScreen = ({navigation}) => {
   const [hasPermission, setHasPermission] = useState(null);
@@ -23,7 +24,8 @@ const ScanCodeScreen = ({navigation}) => {
   const handleBarCodeScanned = async ({type, data}) => {
     try {
       // Open payment screen
-      await Linking.openURL(data);
+      navigation.navigate(NavRoutes.CompletePayment, {...JSON.parse(data)});
+      // await Linking.openURL(data);
     } catch (error) {
       console.warn(error);
       setError(true);

@@ -23,7 +23,7 @@ const CompletePaymentScreen = ({route, navigation}) => {
   const [user, setUser] = useRecoilState(userDetails);
   const [executing, setExecuting] = useState(false);
 
-  const confirmPayment = useCallback(async () => {
+  const confirmPayment = async () => {
     setExecuting(true);
     let walletBalance = user.walletBalance;
 
@@ -59,24 +59,28 @@ const CompletePaymentScreen = ({route, navigation}) => {
         user.fullName,
         account,
         name,
-        parseFloat(amount.replace(',', '')),
+        amount,
         timestamp,
         narration,
       );
       // show success screen
-      // navigation.navigate(NavRoutes.PaymentSuccessful);
-      const successUrl = Linking.createURL(NavRoutes.PaymentSuccessful);
-      await Linking.openURL(successUrl);
+      navigation.navigate(NavRoutes.PaymentSuccessful);
+      // const successUrl = Linking.createURL(NavRoutes.PaymentSuccessful, {
+      //   scheme: 'scanpay',
+      // });
+      // await Linking.openURL(successUrl);
     } catch (e) {
       console.warn(e);
       // show error screen
-      // navigation.navigate(NavRoutes.PaymentFailed);
-      const errorUrl = Linking.createURL(NavRoutes.PaymentFailed);
-      await Linking.openURL(errorUrl);
+      navigation.navigate(NavRoutes.PaymentFailed);
+      // const errorUrl = Linking.createURL(NavRoutes.PaymentFailed, {
+      //   scheme: 'scanpay',
+      // });
+      // await Linking.openURL(errorUrl);
     } finally {
       setExecuting(false);
     }
-  }, []);
+  };
 
   const popToTop = useCallback(() => {
     navigation.popToTop();

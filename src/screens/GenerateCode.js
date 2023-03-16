@@ -48,8 +48,12 @@ const GenerateCodeScreen = ({navigation}) => {
       narration,
     };
 
-    const paymentUrl = Linking.createURL(path, {queryParams: params});
-    setGeneratedUrl(paymentUrl);
+    // const paymentUrl = Linking.createURL(path, {
+    //   queryParams: params,
+    //   scheme: 'scanpay',
+    // });
+    // setGeneratedUrl(paymentUrl);
+    setGeneratedUrl(JSON.stringify(params));
 
     setCodeGenerated(true);
   };

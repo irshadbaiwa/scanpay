@@ -1,4 +1,3 @@
-import * as Linking from 'expo-linking';
 import {
   Box,
   Heading,
