@@ -13,7 +13,6 @@ import {
 } from 'native-base';
 import {useRecoilValue} from 'recoil';
 import Layout from '../components/Layout';
-import WalletInfoCard from '../components/WalletInfoCard';
 import ButtonPrimary from '../components/ButtonPrimary';
 import {Assets} from '../constants/assets';
 import {userDetails} from '../recoil/atoms';
@@ -23,6 +22,7 @@ import {NavRoutes} from '../navigation/NavRoutes';
 const TopUpScreen = ({navigation}) => {
   const [amount, setAmount] = useState('');
   const [card, setCard] = useState('');
+  const [cvv, setCVV] = useState('');
 
   const user = useRecoilValue(userDetails);
   const [executing, setExecuting] = useState(false);
@@ -36,7 +36,7 @@ const TopUpScreen = ({navigation}) => {
       return;
     }
 
-    if (!card.trim()) {
+    if (!(card.trim() && cvv.trim())) {
       setExecuting(false);
       Alert.alert('Invalid card', 'Insert valid card details');
       return;
@@ -80,29 +80,6 @@ const TopUpScreen = ({navigation}) => {
       {/* Form */}
       <KeyboardAvoidingView>
         <VStack space={4} mt={4} alignItems="center">
-          {/* Account details */}
-          <VStack
-            w="full"
-            space={4}
-            mt={4}
-            px={4}
-            py={6}
-            bg="blueGray.200"
-            borderRadius="lg">
-            {/* Wallet Holder */}
-            <WalletInfoCard
-              iconName="person-circle-outline"
-              title="Wallet Holder"
-              value={user.fullName}
-            />
-            {/* Wallet ID */}
-            <WalletInfoCard
-              iconName="card-outline"
-              title="Wallet ID"
-              value={user.walletId}
-            />
-          </VStack>
-
           {/* Amount (₦)*/}
           <FormControl isRequired>
             <Stack mx={2} mt={6}>
@@ -133,6 +110,25 @@ const TopUpScreen = ({navigation}) => {
                 variant="underlined"
                 keyboardType="numeric"
                 placeholder="Card Number"
+                bg="light.100"
+                maxWidth="full"
+                alignSelf="center"
+                fontSize="md"
+                flex={1}
+              />
+            </Stack>
+          </FormControl>
+
+          {/* CVV */}
+          <FormControl isRequired>
+            <Stack mx={2} mt={6}>
+              <Input
+                value={cvv}
+                onChangeText={setCVV}
+                type="number"
+                variant="underlined"
+                keyboardType="numeric"
+                placeholder="CVV"
                 bg="light.100"
                 maxWidth="full"
                 alignSelf="center"
